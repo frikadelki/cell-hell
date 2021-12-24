@@ -1,0 +1,15 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    - always_declare_return_types
+    - prefer_single_quotes
+    - unawaited_futures
+    - sort_child_properties_last
+    - use_full_hex_values_for_flutter_colors
+    - unsafe_html
