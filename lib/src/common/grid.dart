@@ -8,6 +8,56 @@ class BeeVector {
   BeeVector operator +(BeeVector b) {
     return BeeVector(x + b.x, y + b.y);
   }
+
+  @override
+  int get hashCode {
+    return 37 * x.hashCode + y.hashCode;
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is BeeVector && other.x == x && other.y == y);
+  }
+}
+
+class BeeGridDirections {
+  static const west = BeeVector(-1, 0);
+  static const northWest = BeeVector(-1, 1);
+  static const north = BeeVector(0, 1);
+  static const northEast = BeeVector(1, 1);
+  static const east = BeeVector(1, 0);
+  static const southEast = BeeVector(1, -1);
+  static const south = BeeVector(0, -1);
+  static const southWest = BeeVector(-1, -1);
+
+  static const neigboursX4 = [
+    west,
+    north,
+    east,
+    south,
+  ];
+
+  static const neigboursX8 = [
+    west,
+    northWest,
+    north,
+    northEast,
+    east,
+    southEast,
+    south,
+    southWest,
+  ];
+}
+
+extension BeePointNeigbours on BeeVector {
+  Iterable<BeeVector> get neigboursX4 {
+    return BeeGridDirections.neigboursX4.map((direction) => this + direction);
+  }
+
+  Iterable<BeeVector> get neigboursX8 {
+    return BeeGridDirections.neigboursX8.map((direction) => this + direction);
+  }
 }
 
 class BeeCell<TPawn> {
@@ -68,19 +118,8 @@ class BeeGrid<TPawn> {
   }
 
   Iterable<BeeCell<TPawn>> neighbours8x(BeeVector point) {
-    const offsets = [
-      BeeVector(-1, -1),
-      BeeVector(-1, 0),
-      BeeVector(-1, 1),
-      BeeVector(0, 1),
-      BeeVector(1, 1),
-      BeeVector(1, 0),
-      BeeVector(1, -1),
-      BeeVector(0, -1),
-    ];
-    return offsets.map((offset) {
-      final neighbourPoint = point + offset;
-      if (_checkPoint(neighbourPoint)) {
+    return point.neigboursX8.map((neighbourPoint) {
+      if (pointInside(neighbourPoint)) {
         return cellAtPoint(neighbourPoint);
       } else {
         return null;
@@ -110,7 +149,7 @@ class BeeGrid<TPawn> {
     return y >= 0 && y < height;
   }
 
-  bool _checkPoint(BeeVector point) {
+  bool pointInside(BeeVector point) {
     return _checkX(point.x) && _checkY(point.y);
   }
 }
