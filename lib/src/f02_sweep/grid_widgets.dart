@@ -70,41 +70,53 @@ class SweepCellWidget extends StatelessWidget {
       );
     }
 
-    const openBombBg = LinearGradient(
+    final openBombBg = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
         Colors.white,
-        Colors.brown,
-        Colors.grey,
+        Colors.brown.shade300,
+        Colors.brown.shade200,
       ],
     );
 
+    final bombsCountColors = [
+      Colors.blue.shade100,
+      Colors.green.shade100,
+      Colors.green.shade300,
+      Colors.yellow.shade400,
+      Colors.yellow.shade700,
+      Colors.orange.shade500,
+      Colors.orange.shade800,
+      Colors.red.shade500,
+    ];
     late final Gradient bg;
     if (!cell.pawn.openend) {
       bg = closedBg;
     } else {
       if (cell.pawn.hasBomb) {
         bg = openBombBg;
-      } else if (!cell.pawn.hasNeighbourBombs) {
-        bg = openEmptyBg(Colors.blue.shade100);
-      } else if (cell.pawn.neighbourBombs == 1) {
-        bg = openEmptyBg(Colors.green.shade100);
-      } else if (cell.pawn.neighbourBombs == 2) {
-        bg = openEmptyBg(Colors.green.shade300);
-      } else if (cell.pawn.neighbourBombs == 3) {
-        bg = openEmptyBg(Colors.yellow.shade400);
-      } else if (cell.pawn.neighbourBombs == 4) {
-        bg = openEmptyBg(Colors.yellow.shade700);
-      } else if (cell.pawn.neighbourBombs == 5) {
-        bg = openEmptyBg(Colors.orange.shade500);
-      } else if (cell.pawn.neighbourBombs == 6) {
-        bg = openEmptyBg(Colors.orange.shade800);
-      } else if (cell.pawn.neighbourBombs == 7) {
-        bg = openEmptyBg(Colors.red.shade500);
       } else {
-        bg = openEmptyBg(Colors.red.shade800);
+        bg = openEmptyBg(bombsCountColors[cell.pawn.neighbourBombs]);
       }
+    }
+
+    Widget symbolFg(String symbol, [double fix = 1.0]) {
+      return Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Text(
+              symbol,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: fix * 0.8 * constraints.maxHeight,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          },
+        ),
+      );
     }
 
     late final Widget child;
@@ -112,18 +124,9 @@ class SweepCellWidget extends StatelessWidget {
       child = const SizedBox.expand();
     } else {
       if (cell.pawn.hasBomb) {
-        child = const Text('💣');
+        child = symbolFg('💣', 0.85);
       } else if (cell.pawn.neighbourBombs > 0) {
-        child = Center(
-          child: Text(
-            '${cell.pawn.neighbourBombs}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
+        child = symbolFg('${cell.pawn.neighbourBombs}');
       } else {
         child = const SizedBox.expand();
       }
