@@ -10,6 +10,8 @@ abstract class SweepPawnRO {
 
   bool get openend;
 
+  bool get flagged;
+
   int get neighbourBombs;
 }
 
@@ -32,6 +34,8 @@ class SweepPawn implements SweepPawnRO {
 
   bool _open = false;
 
+  bool _flagged = false;
+
   int _neighbourBombs = 0;
 
   @override
@@ -40,12 +44,20 @@ class SweepPawn implements SweepPawnRO {
   void clear() {
     _state = SweepPawnState.empty;
     _open = false;
+    _flagged = false;
     _neighbourBombs = 0;
   }
 
   void plantBomb() {
     assert(SweepPawnState.empty == _state);
     _state = SweepPawnState.bomb;
+  }
+
+  @override
+  bool get flagged => _flagged;
+
+  void invertFlag() {
+    _flagged = !flagged;
   }
 
   @override

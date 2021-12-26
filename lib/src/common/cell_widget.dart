@@ -3,17 +3,23 @@ import 'package:flutter/material.dart';
 class GradientRRBeeCellBg extends StatelessWidget {
   final Gradient bgGradient;
 
+  final Color outlineColor;
+
   final Color splashColor;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+
+  final VoidCallback? onLongPressed;
 
   final Widget child;
 
   const GradientRRBeeCellBg({
     Key? key,
     required this.bgGradient,
+    this.outlineColor = Colors.black,
     required this.splashColor,
-    required this.onPressed,
+    this.onPressed,
+    this.onLongPressed,
     required this.child,
   }) : super(key: key);
 
@@ -27,7 +33,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-          border: Border.all(),
+          border: Border.all(color: outlineColor),
           gradient: bgGradient,
         ),
         child: Material(
@@ -38,6 +44,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
             highlightColor: splashColor.withOpacity(0.25),
             splashColor: splashColor,
             onTap: onPressed,
+            onLongPress: onLongPressed,
             child: child,
           ),
         ),

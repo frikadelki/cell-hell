@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/buttons.dart';
 
+import 'game.dart';
+import 'game_state.dart';
 import 'grid_widgets.dart';
-import 'sweep_game.dart';
 
 class SweepPage extends StatefulWidget {
   const SweepPage({Key? key}) : super(key: key);
@@ -23,14 +24,36 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sweeper'),
-      ),
+      appBar: _buildAppbar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: _buildBody(),
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppbar() {
+    return AppBar(
+      title: StreamBuilder(
+        stream: _game.gameStateStream,
+        builder: (context, _) {
+          return _game.gameStateStream.value.visit(GameStateVisitor(
+            empty: () {
+              return const Text('Sweeper');
+            },
+            running: () {
+              return const Text('Running');
+            },
+            completedWin: (WonGameState win) {
+              return const Text('Won');
+            },
+            completedLoss: (LostGameState loss) {
+              return const Text('Lost');
+            },
+          ));
+        },
       ),
     );
   }
@@ -85,7 +108,8 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
       child: SweepGridWidget(
         grid: _game.grid,
         updateSignal: _game.gridUpdatedSignal,
-        onCellPressed: (cell) => _game.openPawn(cell.x, cell.y),
+        onCellPressed: _game.openPawn,
+        onCellLongPressed: _game.invertFlag,
       ),
     );
   }
@@ -98,12 +122,12 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
       children: [
         ControlButton(
           icon: Icons.cancel,
-          onPressed: _game.clearGrid,
+          onPressed: _game.restartGame,
         ),
         const SizedBox(width: 16.0),
         ControlButton(
           icon: Icons.remove_red_eye,
-          onPressed: _game.revealGrid,
+          onPressed: _game.forfeit,
         ),
       ],
     );

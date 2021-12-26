@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:puffy_playground/src/common/cell_widget.dart';
 import 'package:puffy_playground/src/common/grid_widget.dart';
 
-import 'pawn.dart';
+import 'game_pawn.dart';
 
 class SweepGridWidget extends StatelessWidget {
   final SweepGridRO grid;
@@ -11,11 +11,14 @@ class SweepGridWidget extends StatelessWidget {
 
   final void Function(SweepCellRO cell) onCellPressed;
 
+  final void Function(SweepCellRO cell) onCellLongPressed;
+
   const SweepGridWidget({
     Key? key,
     required this.grid,
     required this.updateSignal,
     required this.onCellPressed,
+    required this.onCellLongPressed,
   }) : super(key: key);
 
   @override
@@ -27,6 +30,7 @@ class SweepGridWidget extends StatelessWidget {
         return SweepCellWidget(
           cell: cell,
           onPressed: () => onCellPressed(cell),
+          onLongPressed: () => onCellLongPressed(cell),
         );
       },
     );
@@ -40,10 +44,13 @@ class SweepCellWidget extends StatelessWidget {
 
   final VoidCallback onPressed;
 
+  final VoidCallback onLongPressed;
+
   const SweepCellWidget({
     Key? key,
     required this.cell,
     required this.onPressed,
+    required this.onLongPressed,
   }) : super(key: key);
 
   @override
@@ -84,7 +91,7 @@ class SweepCellWidget extends StatelessWidget {
       Colors.blue.shade100,
       Colors.green.shade100,
       Colors.green.shade300,
-      Colors.yellow.shade400,
+      Colors.yellow.shade300,
       Colors.yellow.shade700,
       Colors.orange.shade500,
       Colors.orange.shade800,
@@ -121,7 +128,11 @@ class SweepCellWidget extends StatelessWidget {
 
     late final Widget child;
     if (!cell.pawn.openend) {
-      child = const SizedBox.expand();
+      if (cell.pawn.flagged) {
+        child = symbolFg('🚩', 0.85);
+      } else {
+        child = const SizedBox.expand();
+      }
     } else {
       if (cell.pawn.hasBomb) {
         child = symbolFg('💣', 0.85);
@@ -135,6 +146,7 @@ class SweepCellWidget extends StatelessWidget {
       bgGradient: bg,
       splashColor: Colors.teal,
       onPressed: onPressed,
+      onLongPressed: onLongPressed,
       child: child,
     );
   }
