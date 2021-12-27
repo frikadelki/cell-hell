@@ -25,9 +25,8 @@ class NumRange<T extends num> {
 
   final T? maxValue;
 
-  const NumRange(T? minValue, T? maxValue)
+  const NumRange(this.minValue, T? maxValue)
       : assert(minValue == null || maxValue == null || minValue <= maxValue),
-        minValue = minValue,
         maxValue = minValue != null && maxValue != null && maxValue < minValue
             ? minValue
             : maxValue;

@@ -53,7 +53,9 @@ class PlainLifetime implements MutableLifetime {
     _terminated = true;
     final cleanup = _cleanupHandlers.reversed.toList(growable: false);
     _cleanupHandlers.clear();
-    cleanup.forEach((handler) => handler());
+    for (final handler in cleanup) {
+      handler();
+    }
   }
 }
 
