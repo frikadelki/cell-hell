@@ -116,6 +116,8 @@ class SweepGame {
       _gameStartTime = DateTime.now();
       _gridUpdatedSignal.signal();
       _gameStateStream.value = RunningGameState();
+    } else if (_gameStateStream.value is! RunningGameState) {
+      return;
     }
     final pawn = cell.pawn;
     if (pawn.openend || pawn.flagged) {
