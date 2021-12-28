@@ -1,11 +1,36 @@
-class GameSpec {
-  final int width;
+import 'dart:math' as math;
 
-  final int height;
+import 'package:puffy_playground/src/common/grid.dart';
+
+GameSpec get sweepDefultGameSpec =>
+    GameSpec(const BeeVector(8, 8), sweepDefaultBombs(8, 8));
+
+// hardcoded into the generator
+const _safeArea = 9;
+
+class GameSpec {
+  final BeeVector size;
 
   final int bombs;
 
-  const GameSpec(this.width, this.height, this.bombs);
+  const GameSpec(this.size, this.bombs);
+
+  int get width => size.x;
+
+  int get height => size.y;
+
+  bool get playable {
+    final square = width * height;
+    return square - _safeArea - bombs >= 0;
+  }
+}
+
+int sweepDefaultBombs(int width, int height) {
+  return math.max(sweepMaxBombs(width, height) ~/ 6, 1);
+}
+
+int sweepMaxBombs(int width, int height) {
+  return math.max(width * height - _safeArea, 1);
 }
 
 abstract class GameState {

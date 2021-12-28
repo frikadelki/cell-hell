@@ -96,6 +96,7 @@ class SweepCellWidget extends StatelessWidget {
       Colors.orange.shade500,
       Colors.orange.shade800,
       Colors.red.shade500,
+      Colors.red.shade800,
     ];
     late final Gradient bg;
     if (!cell.pawn.openend) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/buttons.dart';
+import 'package:puffy_playground/src/f02_sweep/settings_drawer.dart';
 
 import 'game.dart';
 import 'game_state.dart';
@@ -14,6 +15,8 @@ class SweepPage extends StatefulWidget {
 }
 
 class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   late final SweepGame _game;
 
   @override
@@ -24,7 +27,11 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: _buildAppbar(),
+      endDrawer: SettingsDrawer(
+        onNewGame: _game.restartGame,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -55,10 +62,19 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
           ));
         },
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () {
+            _scaffoldKey.currentState!.openEndDrawer();
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildBody() {
+    return _buildGrid();
     return OrientationBuilder(
       builder: (context, orientation) {
         switch (orientation) {
@@ -103,14 +119,23 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   }
 
   Widget _buildGrid() {
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: SweepGridWidget(
-        grid: _game.grid,
-        updateSignal: _game.gridUpdatedSignal,
-        onCellPressed: _game.openPawn,
-        onCellLongPressed: _game.invertFlag,
-      ),
+    return StreamBuilder(
+      stream: _game.gameStateStream,
+      builder: (context, _) {
+        // wee need to rebuild this becouse behind-the-scenes grid may change
+        // grid should be part of the game state!
+        return Center(
+          child: AspectRatio(
+            aspectRatio: 1.0,
+            child: SweepGridWidget(
+              grid: _game.grid,
+              updateSignal: _game.gridUpdatedSignal,
+              onCellPressed: _game.openPawn,
+              onCellLongPressed: _game.invertFlag,
+            ),
+          ),
+        );
+      },
     );
   }
 

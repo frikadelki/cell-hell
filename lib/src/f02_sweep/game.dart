@@ -7,21 +7,19 @@ import 'game_state.dart';
 import 'game_pawn.dart';
 
 class SweepGame {
-  static const _defaultGameSpec = GameSpec(10, 10, 13);
-
   final Lifetime _lifetime;
 
   final _random = math.Random();
 
-  GameSpec _gameSpec = _defaultGameSpec;
+  GameSpec _gameSpec = sweepDefultGameSpec;
 
   final _gameStateStream = ValueStream<GameState>(EmptyGameState());
 
-  var _grid = _buildGrid(_defaultGameSpec);
+  var _grid = _buildGrid(sweepDefultGameSpec);
 
   final _gridUpdatedSignal = SignalStream();
 
-  final _remainingFlags = ValueStream<int>(_defaultGameSpec.bombs);
+  final _remainingFlags = ValueStream<int>(sweepDefultGameSpec.bombs);
 
   DateTime _gameStartTime = DateTime.fromMicrosecondsSinceEpoch(0);
 
@@ -35,8 +33,8 @@ class SweepGame {
 
   static SweepGrid _buildGrid(GameSpec spec) {
     return SweepGrid(
-      _defaultGameSpec.width,
-      _defaultGameSpec.height,
+      spec.width,
+      spec.height,
       (_) => SweepPawn(),
     );
   }
@@ -73,6 +71,9 @@ class SweepGame {
   Duration get gameDuration => DateTime.now().difference(_gameStartTime);
 
   void restartGame([GameSpec? gameSpec]) {
+    if (gameSpec != null && !gameSpec.playable) {
+      return;
+    }
     _gameStateStream.value = EmptyGameState();
     if (gameSpec != null) {
       _gameSpec = gameSpec;
@@ -97,12 +98,15 @@ class SweepGame {
     if (_gameStateStream.value is! RunningGameState) {
       return;
     }
-    if (cell.pawn.openend || remainingFlags.value <= 0) {
+    if (cell.pawn.openend) {
       return;
     }
     if (cell.pawn.flagged) {
       _remainingFlags.value++;
     } else {
+      if (remainingFlags.value <= 0) {
+        return;
+      }
       _remainingFlags.value--;
     }
     cell.pawn.invertFlag();
