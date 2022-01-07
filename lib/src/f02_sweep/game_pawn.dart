@@ -21,14 +21,6 @@ extension SweepPawnROExt on SweepPawnRO {
   bool get hasNeighbourBombs => neighbourBombs > 0;
 }
 
-typedef SweepCellRO = BeeCell<SweepPawnRO>;
-
-typedef SweepCell = BeeCell<SweepPawn>;
-
-typedef SweepGridRO = BeeGrid<SweepPawnRO>;
-
-typedef SweepGrid = BeeGrid<SweepPawn>;
-
 class SweepPawn implements SweepPawnRO {
   SweepPawnState _state = SweepPawnState.empty;
 
@@ -73,5 +65,35 @@ class SweepPawn implements SweepPawnRO {
   void markOpen() {
     assert(!_open);
     _open = true;
+  }
+}
+
+typedef SweepCellRO = BeeCell<SweepPawnRO>;
+
+typedef SweepCell = BeeCell<SweepPawn>;
+
+typedef SweepGridRO = BeeGrid<SweepPawnRO>;
+
+typedef SweepGrid = BeeGrid<SweepPawn>;
+
+extension SweepGridOps on SweepGrid {
+  void openPawnRecursive(SweepCell cell) {
+    assert(!cell.pawn.openend);
+    cell.pawn.markOpen();
+    if (cell.pawn.hasBomb || cell.pawn.hasNeighbourBombs) {
+      return;
+    }
+    final neighbours = neighbours8x(cell.point).where((it) => !it.pawn.openend);
+    for (final neighbour in neighbours) {
+      openPawnRecursive(neighbour);
+    }
+  }
+
+  void revealGrid() {
+    for (final cell in cells) {
+      if (!cell.pawn.openend) {
+        cell.pawn.markOpen();
+      }
+    }
   }
 }

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/discrete_slider.dart';
 import 'package:puffy_playground/src/common/grid.dart';
-import 'package:puffy_playground/src/f02_sweep/game_state.dart';
+
+import 'game_spec.dart';
 
 class SettingsDrawer extends StatefulWidget {
   final void Function(GameSpec gameSpec) onNewGame;
@@ -212,7 +213,7 @@ class _GridBombsWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Size'),
+        const Text('Bombs'),
         Expanded(
           child: Slider(
             min: 1.0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
-import 'package:puffy_playground/src/common/buttons.dart';
+import 'package:puffy_playground/src/common/grid.dart';
 import 'package:puffy_playground/src/f02_sweep/settings_drawer.dart';
 
 import 'game.dart';
@@ -43,26 +43,15 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
 
   PreferredSizeWidget _buildAppbar() {
     return AppBar(
-      title: StreamBuilder(
-        stream: _game.gameStateStream,
-        builder: (context, _) {
-          return _game.gameStateStream.value.visit(GameStateVisitor(
-            empty: () {
-              return const Text('Sweeper');
-            },
-            running: () {
-              return const Text('Running');
-            },
-            completedWin: (WonGameState win) {
-              return const Text('Won');
-            },
-            completedLoss: (LostGameState loss) {
-              return const Text('Lost');
-            },
-          ));
-        },
-      ),
+      title: _buildAppbarTitle(),
+      centerTitle: true,
       actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+            _game.restartGame();
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () {
@@ -73,88 +62,61 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     );
   }
 
-  Widget _buildBody() {
-    return _buildGrid();
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        switch (orientation) {
-          case Orientation.portrait:
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Flexible(
-                  child: IntrinsicHeight(
-                    child: Center(
-                      child: _buildGrid(),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                _buildMenu(),
-              ],
-            );
-
-          case Orientation.landscape:
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Flexible(
-                  child: IntrinsicWidth(
-                    child: Center(
-                      child: _buildGrid(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                _buildMenu(),
-              ],
-            );
-        }
-      },
-    );
-  }
-
-  Widget _buildGrid() {
+  Widget _buildAppbarTitle() {
     return StreamBuilder(
       stream: _game.gameStateStream,
       builder: (context, _) {
-        // wee need to rebuild this becouse behind-the-scenes grid may change
-        // grid should be part of the game state!
-        return Center(
-          child: AspectRatio(
-            aspectRatio: 1.0,
-            child: SweepGridWidget(
-              grid: _game.grid,
-              updateSignal: _game.gridUpdatedSignal,
-              onCellPressed: _game.openPawn,
-              onCellLongPressed: _game.invertFlag,
-            ),
-          ),
-        );
+        return _game.gameStateStream.value.visit(GameStateVisitor(
+          empty: (empty) {
+            return const Text('Sweeper');
+          },
+          running: (running) {
+            return StreamBuilder(
+              stream: running.remainingFlagsProperty,
+              builder: (context, _) {
+                return Text(
+                  'Running\n'
+                  '${running.remainingFlagsProperty.value}/${running.spec.bombs}',
+                  textAlign: TextAlign.center,
+                );
+              },
+            );
+          },
+          completedWin: (win) {
+            return const Text('Won');
+          },
+          completedLoss: (loss) {
+            return const Text('Lost');
+          },
+        ));
       },
     );
   }
 
-  Widget _buildMenu() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ControlButton(
-          icon: Icons.cancel,
-          onPressed: _game.restartGame,
-        ),
-        const SizedBox(width: 16.0),
-        ControlButton(
-          icon: Icons.remove_red_eye,
-          onPressed: _game.forfeit,
-        ),
-      ],
+  Widget _buildBody() {
+    return Center(
+      child: StreamBuilder(
+        stream: _game.gameStateStream,
+        builder: (context, _) => _buildGameGrid(_game.gameStateStream.value),
+      ),
     );
+  }
+
+  Widget _buildGameGrid(GameState state) {
+    return state.visit(GameStateVisitor(
+      empty: (empty) => EmptySweepGridWidget(
+        width: empty.spec.width,
+        height: empty.spec.height,
+        onPressed: (x, y) => empty.start(BeeVector(x, y)),
+      ),
+      running: (running) => RunningSweepGridWidget(
+        grid: running.grid,
+        updateSignal: running.gridUpdateSignal,
+        onCellPressed: (cell) => running.openPawn(cell.point),
+        onCellLongPressed: (cell) => running.invertFlag(cell.point),
+      ),
+      completedLoss: (loss) => CompletedSweepGridWidget(grid: loss.grid),
+      completedWin: (win) => CompletedSweepGridWidget(grid: win.grid),
+    ));
   }
 }

@@ -19,13 +19,17 @@ class LifeGridWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BeeGridWidget<LifePawnRO>(
-      grid: grid,
-      updateSignal: updateSignal,
-      cellBuilder: (context, cell) {
-        return LifeCellWidget(
-          cell: cell,
-          onPressed: () => onCellPressed(cell),
+    return StreamBuilder(
+      stream: updateSignal,
+      builder: (context, _) {
+        return BeeGridWidget<LifePawnRO>(
+          grid: grid,
+          cellBuilder: (context, cell) {
+            return LifeCellWidget(
+              cell: cell,
+              onPressed: () => onCellPressed(cell),
+            );
+          },
         );
       },
     );

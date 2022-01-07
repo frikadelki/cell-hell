@@ -5,7 +5,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
 
   final Color outlineColor;
 
-  final Color splashColor;
+  final Color? splashColor;
 
   final VoidCallback? onPressed;
 
@@ -17,7 +17,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
     Key? key,
     required this.bgGradient,
     this.outlineColor = Colors.black,
-    required this.splashColor,
+    this.splashColor,
     this.onPressed,
     this.onLongPressed,
     required this.child,
@@ -41,7 +41,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           type: MaterialType.transparency,
           child: InkResponse(
-            highlightColor: splashColor.withOpacity(0.25),
+            highlightColor: splashColor?.withOpacity(0.25),
             splashColor: splashColor,
             onTap: onPressed,
             onLongPress: onLongPressed,
