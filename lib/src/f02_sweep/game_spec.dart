@@ -7,17 +7,6 @@ import 'game_pawn.dart';
 // hardcoded into the generator
 const _safeArea = 9;
 
-GameSpec get sweepDefultGameSpec =>
-    GameSpec(const BeeVector(16, 8), sweepDefaultBombs(16, 8));
-
-int sweepDefaultBombs(int width, int height) {
-  return math.max(sweepMaxBombs(width, height) ~/ 6, 1);
-}
-
-int sweepMaxBombs(int width, int height) {
-  return math.max(width * height - _safeArea, 1);
-}
-
 class GameSpec {
   final BeeVector size;
 

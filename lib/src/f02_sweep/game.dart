@@ -15,9 +15,9 @@ class SweepGame {
 
   late final ValueStream<GameState> _gameStateStream;
 
-  SweepGame(this._lifetime, int width, int height)
+  SweepGame(this._lifetime, GameSpec defaultSpec)
       : _gamesLifetimes = PlainLifetimesSequence(_lifetime) {
-    _gameStateStream = ValueStream(_emptyState(sweepDefultGameSpec));
+    _gameStateStream = ValueStream(_emptyState(defaultSpec));
     _lifetime.add(() {
       _gameStateStream.close();
     });

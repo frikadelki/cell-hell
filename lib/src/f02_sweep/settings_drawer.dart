@@ -1,18 +1,18 @@
-import 'dart:math' as math;
-
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/discrete_slider.dart';
-import 'package:puffy_playground/src/common/grid.dart';
 
 import 'game_spec.dart';
+import 'presets.dart';
 
 class SettingsDrawer extends StatefulWidget {
-  final void Function(GameSpec gameSpec) onNewGame;
+  final ValueStreamRO<SweepPreset> lastPreset;
+
+  final void Function(SweepPreset preset) onNewGame;
 
   const SettingsDrawer({
     Key? key,
+    required this.lastPreset,
     required this.onNewGame,
   }) : super(key: key);
 
@@ -22,19 +22,13 @@ class SettingsDrawer extends StatefulWidget {
 
 class _SettingsState extends State<SettingsDrawer>
     with LifetimedState<SettingsDrawer> {
-  final _gridSizeController = ValueStream<BeeVector>(
-      BeeVector(sweepDefultGameSpec.width, sweepDefultGameSpec.height));
-
-  final _gridBombsController = ValueStream<int>(sweepDefultGameSpec.bombs);
+  final _presetController = ValueStream<SweepPreset>(defaultSweepPreset);
 
   @override
   void initLifetimedState(Lifetime lifetime) {
+    _presetController.value = widget.lastPreset.value;
     lifetime.add(() {
-      _gridSizeController.close();
-      _gridBombsController.close();
-    });
-    _gridSizeController.observe(lifetime, (size) {
-      _gridBombsController.value = sweepDefaultBombs(size.x, size.y);
+      _presetController.close();
     });
   }
 
@@ -56,12 +50,9 @@ class _SettingsState extends State<SettingsDrawer>
             ),
           ),
           _NewGameCard(
-            gridSizeController: _gridSizeController,
-            bombsCountController: _gridBombsController,
+            presetController: _presetController,
             onNewGame: () {
-              final size = _gridSizeController.value;
-              final bombs = _gridBombsController.value;
-              widget.onNewGame(GameSpec(size, bombs));
+              widget.onNewGame(_presetController.value);
               Navigator.of(context).pop();
             },
           ),
@@ -72,16 +63,13 @@ class _SettingsState extends State<SettingsDrawer>
 }
 
 class _NewGameCard extends StatelessWidget {
-  final ValueStream<BeeVector> gridSizeController;
-
-  final ValueStream<int> bombsCountController;
+  final ValueStream<SweepPreset> presetController;
 
   final VoidCallback onNewGame;
 
   const _NewGameCard({
     Key? key,
-    required this.gridSizeController,
-    required this.bombsCountController,
+    required this.presetController,
     required this.onNewGame,
   }) : super(key: key);
 
@@ -98,27 +86,21 @@ class _NewGameCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _GridSizeWidget(sizeController: gridSizeController),
-            StreamBuilder(
-              stream: StreamGroup.merge([
-                gridSizeController,
-                bombsCountController,
-              ]),
-              builder: (context, _) {
-                final size = gridSizeController.value;
-                return _GridBombsWidget(
-                  maxBombs: sweepMaxBombs(size.x, size.y),
-                  bombs: bombsCountController.value,
-                  onChanged: (bombs) {
-                    bombsCountController.value = bombs;
-                  },
-                );
-              },
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: Text(
+                'New Game',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
             ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: onNewGame,
-              child: const Text('New Game'),
+            _NewGameOptionsWidget(sizeController: presetController),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: onNewGame,
+                child: const Text('START'),
+              ),
             ),
           ],
         ),
@@ -127,20 +109,16 @@ class _NewGameCard extends StatelessWidget {
   }
 }
 
-class _GridSizeScales {
-  static const _scales = [0, 8, 10, 16, 20, 24];
+class _NewGameOptionsWidget extends StatelessWidget {
+  final ValueStream<SweepPreset> sizeController;
 
-  static final sizes =
-      _scales.map((scale) => BeeVector(scale, scale)).toList(growable: false);
+  final bool showInfo;
 
-  static const customSize = BeeVector(0, 0);
-}
-
-class _GridSizeWidget extends StatelessWidget {
-  final ValueStream<BeeVector> sizeController;
-
-  const _GridSizeWidget({Key? key, required this.sizeController})
-      : super(key: key);
+  const _NewGameOptionsWidget({
+    Key? key,
+    required this.sizeController,
+    this.showInfo = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +131,7 @@ class _GridSizeWidget extends StatelessWidget {
   }
 
   Widget _build(BuildContext context) {
-    final sizeValue = sizeController.value;
+    final preset = sizeController.value;
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -164,72 +142,55 @@ class _GridSizeWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Size'),
             Expanded(
-              child: DiscreteSlider<BeeVector>(
-                items: _GridSizeScales.sizes,
-                value: sizeValue,
+              child: DiscreteSlider<SweepPreset>(
+                items: sweepPresets,
+                value: preset,
                 onChanged: (value) {
                   sizeController.value = value;
                 },
               ),
             ),
             Container(
-              constraints: const BoxConstraints(minWidth: 44.0),
+              constraints: const BoxConstraints(minWidth: 64.0),
               alignment: Alignment.center,
-              child: () {
-                if (_GridSizeScales.customSize == sizeValue) {
-                  return const Text('CUSTOM');
-                } else {
-                  return Text('${sizeValue.x}x${sizeValue.y}');
-                }
-              }(),
+              child: Text(
+                preset.name,
+                //style: const TextStyle(fontSize: 10),
+              ),
             ),
           ],
         ),
-      ],
-    );
-  }
-}
-
-class _GridBombsWidget extends StatelessWidget {
-  final int maxBombs;
-
-  final int bombs;
-
-  final ValueChanged<int> onChanged;
-
-  const _GridBombsWidget({
-    Key? key,
-    required this.maxBombs,
-    required this.bombs,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text('Bombs'),
-        Expanded(
-          child: Slider(
-            min: 1.0,
-            max: maxBombs.toDouble(),
-            divisions: math.max(maxBombs - 1, 1),
-            value: bombs.toDouble(),
-            onChanged: (value) {
-              onChanged(value.toInt());
-            },
+        if (showInfo)
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (!preset.custom) ...[
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    '${preset.size.x}x${preset.size.y}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '${preset.bombs}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ] else ...[
+                // TODO
+                const Text(
+                  'CUSTOM',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ],
           ),
-        ),
-        Container(
-          constraints: const BoxConstraints(minWidth: 44.0),
-          alignment: Alignment.center,
-          child: Text('$bombs'),
-        ),
       ],
     );
   }

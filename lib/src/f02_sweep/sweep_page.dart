@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/grid.dart';
-import 'package:puffy_playground/src/f02_sweep/settings_drawer.dart';
 
 import 'game.dart';
 import 'game_state.dart';
 import 'grid_widgets.dart';
+import 'presets.dart';
+import 'settings_drawer.dart';
 
 class SweepPage extends StatefulWidget {
   const SweepPage({Key? key}) : super(key: key);
@@ -19,9 +20,14 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
 
   late final SweepGame _game;
 
+  final _lastPresetProperty = ValueStream<SweepPreset>(defaultSweepPreset);
+
   @override
   void initLifetimedState(Lifetime lifetime) {
-    _game = SweepGame(lifetime, 16, 16);
+    _game = SweepGame(lifetime, _lastPresetProperty.value.gameSpec);
+    lifetime.add(() {
+      _lastPresetProperty.close();
+    });
   }
 
   @override
@@ -29,15 +35,23 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: _buildAppbar(),
-      endDrawer: SettingsDrawer(
-        onNewGame: _game.restartGame,
-      ),
+      endDrawer: _buildSettingsDrawer(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: _buildBody(),
         ),
       ),
+    );
+  }
+
+  Widget _buildSettingsDrawer() {
+    return SettingsDrawer(
+      lastPreset: _lastPresetProperty,
+      onNewGame: (preset) {
+        _lastPresetProperty.value = preset;
+        _game.restartGame(preset.gameSpec);
+      },
     );
   }
 

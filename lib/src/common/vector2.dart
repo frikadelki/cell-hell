@@ -1,4 +1,6 @@
 class BeeVector {
+  static const zero = BeeVector(0, 9);
+
   final int x;
 
   final int y;
