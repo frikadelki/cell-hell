@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/discrete_slider.dart';
 
-import 'game_spec.dart';
 import 'presets.dart';
 
 class SettingsDrawer extends StatefulWidget {
@@ -94,7 +93,7 @@ class _NewGameCard extends StatelessWidget {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
-            _NewGameOptionsWidget(sizeController: presetController),
+            _NewGameOptionsWidget(presetController: presetController),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
@@ -110,20 +109,20 @@ class _NewGameCard extends StatelessWidget {
 }
 
 class _NewGameOptionsWidget extends StatelessWidget {
-  final ValueStream<SweepPreset> sizeController;
+  final ValueStream<SweepPreset> presetController;
 
   final bool showInfo;
 
   const _NewGameOptionsWidget({
     Key? key,
-    required this.sizeController,
+    required this.presetController,
     this.showInfo = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: sizeController,
+      stream: presetController,
       builder: (context, _) {
         return _build(context);
       },
@@ -131,7 +130,7 @@ class _NewGameOptionsWidget extends StatelessWidget {
   }
 
   Widget _build(BuildContext context) {
-    final preset = sizeController.value;
+    final preset = presetController.value;
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -147,17 +146,14 @@ class _NewGameOptionsWidget extends StatelessWidget {
                 items: sweepPresets,
                 value: preset,
                 onChanged: (value) {
-                  sizeController.value = value;
+                  presetController.value = value;
                 },
               ),
             ),
             Container(
               constraints: const BoxConstraints(minWidth: 64.0),
               alignment: Alignment.center,
-              child: Text(
-                preset.name,
-                //style: const TextStyle(fontSize: 10),
-              ),
+              child: Text(preset.name),
             ),
           ],
         ),

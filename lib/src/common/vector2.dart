@@ -1,5 +1,5 @@
 class BeeVector {
-  static const zero = BeeVector(0, 9);
+  static const zero = BeeVector(0, 0);
 
   final int x;
 
