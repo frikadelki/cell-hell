@@ -77,16 +77,23 @@ typedef SweepGridRO = BeeGrid<SweepPawnRO>;
 typedef SweepGrid = BeeGrid<SweepPawn>;
 
 extension SweepGridOps on SweepGrid {
-  void openPawnRecursive(SweepCell cell) {
+  /// returns amount of cleared flags on opened cells
+  int openPawnRecursive(SweepCell cell) {
     assert(!cell.pawn.openend);
+    final wasFlagged = cell.pawn.flagged;
     cell.pawn.markOpen();
+    if (wasFlagged) {
+      cell.pawn.invertFlag();
+    }
+    var flagsReset = wasFlagged ? 1 : 0;
     if (cell.pawn.hasBomb || cell.pawn.hasNeighbourBombs) {
-      return;
+      return flagsReset;
     }
     final neighbours = neighbours8x(cell.point).where((it) => !it.pawn.openend);
     for (final neighbour in neighbours) {
-      openPawnRecursive(neighbour);
+      flagsReset += openPawnRecursive(neighbour);
     }
+    return flagsReset;
   }
 
   void revealGrid() {

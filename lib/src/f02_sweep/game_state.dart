@@ -100,7 +100,8 @@ class RunningGameState extends GameState {
     if (pawn.openend || pawn.flagged) {
       return;
     }
-    grid.openPawnRecursive(cell);
+    final clearedFlags = grid.openPawnRecursive(cell);
+    remainingFlagsProperty.value += clearedFlags;
     gridUpdateSignal.signal();
     if (pawn.hasBomb) {
       _endGameLost();
