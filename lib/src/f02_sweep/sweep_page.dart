@@ -10,7 +10,12 @@ import 'presets.dart';
 import 'settings_drawer.dart';
 
 class SweepPage extends StatefulWidget {
-  const SweepPage({Key? key}) : super(key: key);
+  final Widget fDrawer;
+
+  const SweepPage({
+    Key? key,
+    required this.fDrawer,
+  }) : super(key: key);
 
   @override
   State<SweepPage> createState() => _SweepPageState();
@@ -39,6 +44,7 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: _buildAppbar(),
+      drawer: widget.fDrawer,
       endDrawer: _buildSettingsDrawer(),
       body: SafeArea(
         child: Padding(

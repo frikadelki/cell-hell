@@ -5,7 +5,12 @@ import 'package:puffy_playground/src/f01_life/grid_widgets.dart';
 import 'package:puffy_playground/src/f01_life/life_game.dart';
 
 class LifePage extends StatefulWidget {
-  const LifePage({Key? key}) : super(key: key);
+  final Widget fDrawer;
+
+  const LifePage({
+    Key? key,
+    required this.fDrawer,
+  }) : super(key: key);
 
   @override
   State<LifePage> createState() => _LifePageState();
@@ -25,6 +30,7 @@ class _LifePageState extends State<LifePage> with LifetimedState<LifePage> {
       appBar: AppBar(
         title: const Text('Conway\'s Life'),
       ),
+      drawer: widget.fDrawer,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
