@@ -1,6 +1,6 @@
 enum ControlScheme {
-  PrimaryOpens,
-  PrimaryFlags,
+  primaryOpens,
+  primaryFlags,
 }
 
 extension ControlSchemeExt on ControlScheme {
@@ -9,11 +9,11 @@ extension ControlSchemeExt on ControlScheme {
     required void Function() flag,
   }) {
     switch (this) {
-      case ControlScheme.PrimaryOpens:
+      case ControlScheme.primaryOpens:
         open();
         return;
 
-      case ControlScheme.PrimaryFlags:
+      case ControlScheme.primaryFlags:
         flag();
         return;
     }
@@ -24,11 +24,11 @@ extension ControlSchemeExt on ControlScheme {
     required void Function() flag,
   }) {
     switch (this) {
-      case ControlScheme.PrimaryOpens:
+      case ControlScheme.primaryOpens:
         flag();
         return;
 
-      case ControlScheme.PrimaryFlags:
+      case ControlScheme.primaryFlags:
         open();
         return;
     }

@@ -24,7 +24,7 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   final _lastPresetProperty = ValueStream<SweepPreset>(defaultSweepPreset);
 
   final _controlSchemeProperty =
-      ValueStream<ControlScheme>(ControlScheme.PrimaryOpens);
+      ValueStream<ControlScheme>(ControlScheme.primaryOpens);
 
   @override
   void initLifetimedState(Lifetime lifetime) {

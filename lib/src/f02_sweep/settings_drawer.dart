@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/discrete_slider.dart';
@@ -186,7 +185,7 @@ class _NewGameOptionsWidget extends StatelessWidget {
                   ),
                 ),
               ] else ...[
-                // TODO
+                // TODO: customSweepPreset
                 const Text(
                   'CUSTOM',
                   textAlign: TextAlign.center,
@@ -229,11 +228,11 @@ class _ControlSchemeCard extends StatelessWidget {
               ),
             ),
             _buildOption(
-              ControlScheme.PrimaryOpens,
+              ControlScheme.primaryOpens,
               'Single tap opens\nLong/double tap flags',
             ),
             _buildOption(
-              ControlScheme.PrimaryFlags,
+              ControlScheme.primaryFlags,
               'Long/double tap opens\nSingle tap flags',
             ),
           ],
