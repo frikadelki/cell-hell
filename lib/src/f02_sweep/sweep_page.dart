@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/grid.dart';
 
+import 'control_scheme.dart';
 import 'game.dart';
 import 'game_state.dart';
 import 'grid_widgets.dart';
@@ -21,6 +22,9 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   late final SweepGame _game;
 
   final _lastPresetProperty = ValueStream<SweepPreset>(defaultSweepPreset);
+
+  final _controlSchemeProperty =
+      ValueStream<ControlScheme>(ControlScheme.PrimaryOpens);
 
   @override
   void initLifetimedState(Lifetime lifetime) {
@@ -48,6 +52,7 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
   Widget _buildSettingsDrawer() {
     return SettingsDrawer(
       lastPreset: _lastPresetProperty,
+      controlScheme: _controlSchemeProperty,
       onNewGame: (preset) {
         _lastPresetProperty.value = preset;
         _game.restartGame(preset.gameSpec);
@@ -121,13 +126,27 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
       empty: (empty) => EmptySweepGridWidget(
         width: empty.spec.width,
         height: empty.spec.height,
-        onPressed: (x, y) => empty.start(BeeVector(x, y)),
+        onPressed: (x, y) => _controlSchemeProperty.value.executePrimary(
+          open: () => empty.start(BeeVector(x, y)),
+          flag: () {},
+        ),
+        onLongPressed: (x, y) => _controlSchemeProperty.value.executeSecondary(
+          open: () => empty.start(BeeVector(x, y)),
+          flag: () {},
+        ),
       ),
       running: (running) => RunningSweepGridWidget(
         grid: running.grid,
         updateSignal: running.gridUpdateSignal,
-        onCellPressed: (cell) => running.openPawn(cell.point),
-        onCellLongPressed: (cell) => running.invertFlag(cell.point),
+        onCellPressed: (cell) => _controlSchemeProperty.value.executePrimary(
+          open: () => running.openPawn(cell.point),
+          flag: () => running.invertFlag(cell.point),
+        ),
+        onCellLongPressed: (cell) =>
+            _controlSchemeProperty.value.executeSecondary(
+          open: () => running.openPawn(cell.point),
+          flag: () => running.invertFlag(cell.point),
+        ),
       ),
       completedLoss: (loss) => CompletedSweepGridWidget(grid: loss.grid),
       completedWin: (win) => CompletedSweepGridWidget(grid: win.grid),

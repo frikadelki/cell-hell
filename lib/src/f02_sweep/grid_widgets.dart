@@ -11,11 +11,14 @@ class EmptySweepGridWidget extends StatelessWidget {
 
   final void Function(int x, int y) onPressed;
 
+  final void Function(int x, int y) onLongPressed;
+
   const EmptySweepGridWidget({
     Key? key,
     required this.width,
     required this.height,
     required this.onPressed,
+    required this.onLongPressed,
   }) : super(key: key);
 
   @override
@@ -24,7 +27,10 @@ class EmptySweepGridWidget extends StatelessWidget {
       width: width,
       height: height,
       cellBuilder: (context, x, y) {
-        return ClosedCellBg(onPressed: () => onPressed(x, y));
+        return ClosedCellBg(
+          onPressed: () => onPressed(x, y),
+          onLongPressed: () => onLongPressed(x, y),
+        );
       },
     );
   }

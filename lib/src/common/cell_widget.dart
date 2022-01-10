@@ -44,6 +44,7 @@ class GradientRRBeeCellBg extends StatelessWidget {
             highlightColor: splashColor?.withOpacity(0.25),
             splashColor: splashColor,
             onTap: onPressed,
+            onDoubleTap: onLongPressed,
             onLongPress: onLongPressed,
             child: child,
           ),

@@ -1,17 +1,22 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/discrete_slider.dart';
 
+import 'control_scheme.dart';
 import 'presets.dart';
 
 class SettingsDrawer extends StatefulWidget {
   final ValueStreamRO<SweepPreset> lastPreset;
+
+  final ValueStream<ControlScheme> controlScheme;
 
   final void Function(SweepPreset preset) onNewGame;
 
   const SettingsDrawer({
     Key? key,
     required this.lastPreset,
+    required this.controlScheme,
     required this.onNewGame,
   }) : super(key: key);
 
@@ -55,6 +60,8 @@ class _SettingsState extends State<SettingsDrawer>
               Navigator.of(context).pop();
             },
           ),
+          const SizedBox(height: 16.0),
+          _ControlSchemeCard(controlScheme: widget.controlScheme),
         ],
       ),
     );
@@ -75,7 +82,7 @@ class _NewGameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4.0,
+      elevation: 2.0,
       margin: const EdgeInsets.all(0.0),
       shape: const RoundedRectangleBorder(),
       child: Padding(
@@ -188,6 +195,80 @@ class _NewGameOptionsWidget extends StatelessWidget {
             ],
           ),
       ],
+    );
+  }
+}
+
+class _ControlSchemeCard extends StatelessWidget {
+  final ValueStream<ControlScheme> controlScheme;
+
+  const _ControlSchemeCard({
+    Key? key,
+    required this.controlScheme,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2.0,
+      margin: const EdgeInsets.all(0.0),
+      shape: const RoundedRectangleBorder(),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: Text(
+                'Control Scheme',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ),
+            _buildOption(
+              ControlScheme.PrimaryOpens,
+              'Single tap opens\nLong/double tap flags',
+            ),
+            _buildOption(
+              ControlScheme.PrimaryFlags,
+              'Long/double tap opens\nSingle tap flags',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOption(ControlScheme option, String label) {
+    return GestureDetector(
+      onTap: () {
+        controlScheme.value = option;
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          StreamBuilder(
+            stream: controlScheme,
+            builder: (context, _) {
+              return Radio<ControlScheme>(
+                value: option,
+                groupValue: controlScheme.value,
+                onChanged: (_) {
+                  controlScheme.value = option;
+                },
+              );
+            },
+          ),
+          Expanded(
+            child: Text(label),
+          ),
+        ],
+      ),
     );
   }
 }
