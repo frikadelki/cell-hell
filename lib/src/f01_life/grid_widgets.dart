@@ -72,7 +72,7 @@ class LifeCellWidget extends StatelessWidget {
     );
     return GradientRRBeeCellBg(
       bgGradient: cell.pawn.alive ? bg1 : bg2,
-      splashColor: Colors.amber.withOpacity(0.9),
+      splashColor: Colors.purple.shade400.withOpacity(0.9),
       onPressed: onPressed,
       child: const SizedBox.expand(),
     );
