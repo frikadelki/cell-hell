@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:puffy_playground/src/common/buttons.dart';
+import 'package:puffy_playground/src/common/features_navigation.dart';
 import 'package:puffy_playground/src/f01_life/grid_widgets.dart';
 import 'package:puffy_playground/src/f01_life/life_game.dart';
 
 class LifePage extends StatefulWidget {
-  final Widget fDrawer;
-
-  const LifePage({
-    Key? key,
-    required this.fDrawer,
-  }) : super(key: key);
+  const LifePage({Key? key}) : super(key: key);
 
   @override
   State<LifePage> createState() => _LifePageState();
@@ -30,7 +26,7 @@ class _LifePageState extends State<LifePage> with LifetimedState<LifePage> {
       appBar: AppBar(
         title: const Text('Conway\'s Life'),
       ),
-      drawer: widget.fDrawer,
+      drawer: const FeaturesNavigationDrawer(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

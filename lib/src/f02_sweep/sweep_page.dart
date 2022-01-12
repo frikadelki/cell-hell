@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
+import 'package:puffy_playground/src/common/features_navigation.dart';
 import 'package:puffy_playground/src/common/grid.dart';
 
 import 'control_scheme.dart';
@@ -10,12 +11,7 @@ import 'presets.dart';
 import 'settings_drawer.dart';
 
 class SweepPage extends StatefulWidget {
-  final Widget fDrawer;
-
-  const SweepPage({
-    Key? key,
-    required this.fDrawer,
-  }) : super(key: key);
+  const SweepPage({Key? key}) : super(key: key);
 
   @override
   State<SweepPage> createState() => _SweepPageState();
@@ -44,7 +40,7 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: _buildAppbar(),
-      drawer: widget.fDrawer,
+      drawer: const FeaturesNavigationDrawer(),
       endDrawer: _buildSettingsDrawer(),
       body: SafeArea(
         child: Padding(
