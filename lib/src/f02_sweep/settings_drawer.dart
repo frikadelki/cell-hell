@@ -231,6 +231,7 @@ class _ControlSchemeCard extends StatelessWidget {
               ControlScheme.primaryOpens,
               'Single tap opens\nLong/double tap flags',
             ),
+            const SizedBox(height: 8.0),
             _buildOption(
               ControlScheme.primaryFlags,
               'Long/double tap opens\nSingle tap flags',

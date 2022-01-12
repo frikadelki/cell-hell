@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:provider/provider.dart';
 import 'package:puffy_playground/src/common/features_navigation.dart';
+import 'package:puffy_playground/src/common/res.dart';
 import 'package:puffy_playground/src/features.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cell Hell',
+      title: AppStrings.appName,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:puffy_playground/src/common/about.dart';
+import 'package:puffy_playground/src/common/res.dart';
 
 class FeatureNavigationItem {
   final String name;
@@ -31,7 +33,7 @@ class FeaturesNavigationDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             child: Text(
-              'Cell Hell',
+              AppStrings.appName,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -41,8 +43,19 @@ class FeaturesNavigationDrawer extends StatelessWidget {
           ...navigation.items.map(
             (item) => ListTile(
               title: Text(item.name),
-              onTap: item.navigate,
+              onTap: () {
+                Navigator.of(context).pop();
+                item.navigate();
+              },
             ),
+          ),
+          const Divider(),
+          ListTile(
+            title: const Text('About'),
+            onTap: () {
+              Navigator.of(context).pop();
+              showAboutCellHell(context);
+            },
           ),
         ],
       ),
