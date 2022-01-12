@@ -1,4 +1,4 @@
-import 'package:puffy_playground/src/common/grid.dart';
+import 'package:cell_hell/src/common/grid.dart';
 
 enum SweepPawnState {
   bomb,

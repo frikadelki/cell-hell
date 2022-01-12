@@ -1,7 +1,7 @@
+import 'package:cell_hell/src/common/features_navigation.dart';
+import 'package:cell_hell/src/common/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
-import 'package:puffy_playground/src/common/features_navigation.dart';
-import 'package:puffy_playground/src/common/grid.dart';
 
 import 'control_scheme.dart';
 import 'game.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:puffy_playground/src/common/about.dart';
-import 'package:puffy_playground/src/common/res.dart';
+import 'package:cell_hell/src/common/about.dart';
+import 'package:cell_hell/src/common/res.dart';
 
 class FeatureNavigationItem {
   final String name;

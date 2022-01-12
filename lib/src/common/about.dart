@@ -1,7 +1,7 @@
+import 'package:cell_hell/src/common/res.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:puffy_playground/src/common/res.dart';
 
 abstract class AboutRes {
   static const text = 'developed by frikadelki';

@@ -1,6 +1,6 @@
+import 'package:cell_hell/src/common/discrete_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
-import 'package:puffy_playground/src/common/discrete_slider.dart';
 
 import 'control_scheme.dart';
 import 'presets.dart';

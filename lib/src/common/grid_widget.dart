@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:puffy_playground/src/common/grid.dart';
+
+import 'grid.dart';
 
 class BeeGridWidget<TPawn> extends StatelessWidget {
   final BeeGrid<TPawn> grid;

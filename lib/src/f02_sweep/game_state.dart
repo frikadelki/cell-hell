@@ -1,6 +1,6 @@
+import 'package:cell_hell/src/common/grid.dart';
 import 'package:frock/runtime/lifetime.dart';
 import 'package:frock/runtime/stream_utils.dart';
-import 'package:puffy_playground/src/common/grid.dart';
 
 import 'game_pawn.dart';
 import 'game_spec.dart';

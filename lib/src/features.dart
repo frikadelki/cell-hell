@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:puffy_playground/src/f01_life/life_page.dart';
-import 'package:puffy_playground/src/f02_sweep/sweep_page.dart';
+import 'package:cell_hell/src/f01_life/life_page.dart';
+import 'package:cell_hell/src/f02_sweep/sweep_page.dart';
 
 class FeatureItem {
   final String name;

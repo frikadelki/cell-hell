@@ -1,7 +1,8 @@
+import 'package:cell_hell/src/common/cell_widget.dart';
+import 'package:cell_hell/src/common/grid_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:puffy_playground/src/common/cell_widget.dart';
-import 'package:puffy_playground/src/common/grid_widget.dart';
-import 'package:puffy_playground/src/f01_life/pawn.dart';
+
+import 'pawn.dart';
 
 class LifeGridWidget extends StatelessWidget {
   final LifeGridRO grid;

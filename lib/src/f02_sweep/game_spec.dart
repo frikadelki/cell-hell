@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:puffy_playground/src/common/grid.dart';
+import 'package:cell_hell/src/common/grid.dart';
 
 import 'game_pawn.dart';
 

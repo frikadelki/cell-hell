@@ -1,9 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:cell_hell/src/common/grid.dart';
 import 'package:frock/runtime/lifetime.dart';
 import 'package:frock/runtime/stream_utils.dart';
-import 'package:puffy_playground/src/common/grid.dart';
-import 'package:puffy_playground/src/f01_life/pawn.dart';
+
+import 'pawn.dart';
 
 class LifeGame {
   static const _stepDelay = Duration(milliseconds: 500);

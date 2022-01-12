@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:cell_hell/src/common/grid.dart';
 import 'package:frock/frock.dart';
-import 'package:puffy_playground/src/common/grid.dart';
 
 import 'game_spec.dart';
 import 'game_state.dart';

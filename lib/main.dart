@@ -1,9 +1,9 @@
+import 'package:cell_hell/src/common/features_navigation.dart';
+import 'package:cell_hell/src/common/res.dart';
+import 'package:cell_hell/src/features.dart';
 import 'package:flutter/material.dart';
 import 'package:frock/frock.dart';
 import 'package:provider/provider.dart';
-import 'package:puffy_playground/src/common/features_navigation.dart';
-import 'package:puffy_playground/src/common/res.dart';
-import 'package:puffy_playground/src/features.dart';
 
 void main() {
   runApp(const MyApp());
