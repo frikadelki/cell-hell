@@ -51,17 +51,6 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     );
   }
 
-  Widget _buildSettingsDrawer() {
-    return SettingsDrawer(
-      lastPreset: _lastPresetProperty,
-      controlScheme: _controlSchemeProperty,
-      onNewGame: (preset) {
-        _lastPresetProperty.value = preset;
-        _game.restartGame(preset.gameSpec);
-      },
-    );
-  }
-
   PreferredSizeWidget _buildAppbar() {
     return AppBar(
       title: _buildAppbarTitle(),
@@ -110,6 +99,17 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
             return const Text('Lost');
           },
         ));
+      },
+    );
+  }
+
+  Widget _buildSettingsDrawer() {
+    return SettingsDrawer(
+      lastPreset: _lastPresetProperty,
+      controlScheme: _controlSchemeProperty,
+      onNewGame: (preset) {
+        _lastPresetProperty.value = preset;
+        _game.restartGame(preset.gameSpec);
       },
     );
   }

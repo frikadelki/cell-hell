@@ -21,7 +21,7 @@ const sweepPresets = [
   // TODO: customSweepPreset,
   defaultSweepPreset,
   SweepPreset('Sweeper', BeeVector(10, 18), 24),
-  SweepPreset('Expert', BeeVector(12, 20), 32),
+  SweepPreset('Expert', BeeVector(12, 20), 44),
   SweepPreset('H-t-H', BeeVector(5, 10), 5 * 10 - 16),
 ];
 

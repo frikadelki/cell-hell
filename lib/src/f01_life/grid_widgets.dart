@@ -51,27 +51,27 @@ class LifeCellWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bg1 = LinearGradient(
+    final bg1 = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Colors.white,
-        Colors.blueGrey,
-        Colors.grey,
+        Colors.purple.shade100,
+        Colors.purple.shade400,
+        Colors.purple.shade300,
       ],
     );
-    const bg2 = LinearGradient(
+    final bg2 = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
         Colors.white,
-        Colors.amber,
-        Colors.orange,
+        Colors.blue.shade100,
+        Colors.white,
       ],
     );
     return GradientRRBeeCellBg(
       bgGradient: cell.pawn.alive ? bg1 : bg2,
-      splashColor: Colors.teal,
+      splashColor: Colors.amber.withOpacity(0.9),
       onPressed: onPressed,
       child: const SizedBox.expand(),
     );
