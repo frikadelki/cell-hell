@@ -8,11 +8,14 @@ class RepeatableSyncState<TData> {
 
   final bool syncing;
 
-  RepeatableSyncState(this.data, this.syncing);
+  final Object? lastSyncError;
+
+  RepeatableSyncState(this.data, this.syncing, this.lastSyncError);
 
   RepeatableSyncState.initial()
       : data = null,
-        syncing = false;
+        syncing = false,
+        lastSyncError = null;
 }
 
 abstract class RepeatableSyncFetch<TData> {
@@ -55,7 +58,7 @@ class RepeatableSync<TData> {
       return;
     }
     _applyLifetimes.next();
-    _stream.value = RepeatableSyncState(data, false);
+    _stream.value = RepeatableSyncState(data, false, null);
   }
 
   Future<void> applyFetch(RepeatableSyncFetch<TData> fetch) {
@@ -80,15 +83,15 @@ class RepeatableSync<TData> {
     RepeatableSyncFetch<TData> fetch,
   ) async {
     try {
-      _stream.value = RepeatableSyncState(_stream.value.data, true);
+      _stream.value = RepeatableSyncState(_stream.value.data, true, null);
       final newData = await fetch.fetch();
       if (completer.isCompleted) {
         return;
       }
-      _stream.value = RepeatableSyncState(newData, false);
-    } catch (_) {
+      _stream.value = RepeatableSyncState(newData, false, null);
+    } catch (e) {
       if (!completer.isCompleted) {
-        _stream.value = RepeatableSyncState(_stream.value.data, false);
+        _stream.value = RepeatableSyncState(_stream.value.data, false, e);
       }
     } finally {
       if (!completer.isCompleted) {
