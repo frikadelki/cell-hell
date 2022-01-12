@@ -127,16 +127,18 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
     );
   }
 
+  ControlScheme get controlScheme => _controlSchemeProperty.value;
+
   Widget _buildGameGrid(GameState state) {
     return state.visit(GameStateVisitor(
       empty: (empty) => EmptySweepGridWidget(
         width: empty.spec.width,
         height: empty.spec.height,
-        onPressed: (x, y) => _controlSchemeProperty.value.executePrimary(
+        onPressed: (x, y) => controlScheme.executePrimary(
           open: () => empty.start(BeeVector(x, y)),
           flag: () {},
         ),
-        onLongPressed: (x, y) => _controlSchemeProperty.value.executeSecondary(
+        onLongPressed: (x, y) => controlScheme.executeSecondary(
           open: () => empty.start(BeeVector(x, y)),
           flag: () {},
         ),
@@ -144,12 +146,11 @@ class _SweepPageState extends State<SweepPage> with LifetimedState<SweepPage> {
       running: (running) => RunningSweepGridWidget(
         grid: running.grid,
         updateSignal: running.gridUpdateSignal,
-        onCellPressed: (cell) => _controlSchemeProperty.value.executePrimary(
+        onCellPressed: (cell) => controlScheme.executePrimary(
           open: () => running.openPawn(cell.point),
           flag: () => running.invertFlag(cell.point),
         ),
-        onCellLongPressed: (cell) =>
-            _controlSchemeProperty.value.executeSecondary(
+        onCellLongPressed: (cell) => controlScheme.executeSecondary(
           open: () => running.openPawn(cell.point),
           flag: () => running.invertFlag(cell.point),
         ),
