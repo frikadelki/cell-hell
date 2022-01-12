@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:frock/runtime/frock_runtime.dart';
 
-import 'lifetime.dart';
-
 abstract class ValueStreamRO<T> extends Stream<T> {
   T get value;
 }
@@ -82,10 +80,10 @@ class SignalStream extends Stream<void> {
   @override
   StreamSubscription<void> listen(
     void Function(void event)? onData, {
-      Function? onError,
-      dynamic Function()? onDone,
-      bool? cancelOnError,
-    }) {
+    Function? onError,
+    dynamic Function()? onDone,
+    bool? cancelOnError,
+  }) {
     return _controller.stream.listen(
       onData,
       onError: onError,

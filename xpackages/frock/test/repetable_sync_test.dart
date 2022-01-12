@@ -1,6 +1,5 @@
 import 'package:fake_async/fake_async.dart';
 import 'package:frock/frock.dart';
-import 'package:frock/runtime/repeatable_sync.dart';
 import 'package:test/test.dart';
 
 void main() {
